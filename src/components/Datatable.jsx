@@ -15,9 +15,11 @@ const Datatable = () => {
             if (a[column].toString() > b[column].toString()) {
                 return asc ? -1 : 1
             }
+
             if (b[column].toString() > a[column].toString()) {
-                asc ? 1 : -1
+                return asc ? 1 : -1
             }
+
             return 0
         })
     }
@@ -28,10 +30,9 @@ const Datatable = () => {
                 row[column].toString().toLowerCase().indexOf(query.toLowerCase()) > -1))
     }
 
-    console.log(filter(snacks));
     return (
         <div>
-            <input type='text' placeholder='search here...' value={query} onChange={(event) => setQuery(event.target.value)} />
+            <input aria-label='search' type='text' placeholder='search here...' value={query} onChange={(event) => setQuery(event.target.value)} />
             <table className='table'>
                 <tr>
                     {
