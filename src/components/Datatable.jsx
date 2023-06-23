@@ -7,63 +7,61 @@ const Datatable = () => {
         column: columns[0],
         asc: false
     })
+    const [query, setQuery] = useState('')
 
     const sortTable = (snacks) => {
+        const { column, asc } = sortBy
         return snacks.sort((a, b) => {
-            if (a[sortBy.column].toString() > b[sortBy.column].toString()) {
-                return sortBy.asc ? -1 : 1
+            if (a[column].toString() > b[column].toString()) {
+                return asc ? -1 : 1
             }
-            if (b[sortBy.column].toString() > a[sortBy.column].toString()) {
-                sortBy.asc ? 1 : -1
+            if (b[column].toString() > a[column].toString()) {
+                asc ? 1 : -1
             }
             return 0
         })
     }
 
-    return (
-        <table className='table'>
-            <tr>
-                {
-                    columns.map((column) => (
-                        <th className='table-head' onClick={() => setSortBy((prev) => ({ column, asc: !prev.asc }))} >
+    const filter = (rows) => {
+        return rows.filter(row =>
+            columns?.some(column =>
+                row[column].toString().toLowerCase().indexOf(query.toLowerCase()) > -1))
+    }
 
-                            <div>{column}</div>
-                        </th>
+    console.log(filter(snacks));
+    return (
+        <div>
+            <input type='text' placeholder='search here...' value={query} onChange={(event) => setQuery(event.target.value)} />
+            <table className='table'>
+                <tr>
+                    {
+                        columns.map((column) => (
+                            <th className='table-head' onClick={() => setSortBy((prev) => ({ column, asc: !prev.asc }))} >
+
+                                <div>{column}</div>
+                            </th>
+                        ))
+                    }
+
+
+                </tr>
+
+                {
+                    sortTable(filter(snacks)).map((snack) => (
+                        <tr>
+                            {
+                                columns.map((column) => (
+                                    <td className='table-data' >
+
+                                        {snack[column]}
+                                    </td>
+                                ))
+                            }
+                        </tr>
                     ))
                 }
-                {/* <th className='table-head' >ID</th>
-                <th className='table-head' >Product Name</th>
-                <th className='table-head' > Product Weight</th>
-                <th className='table-head' > Price (INR)</th>
-                <th className='table-head' >Calories</th>
-                <th className='table-head' >Ingredients</th> */}
-
-            </tr>
-
-            {
-                sortTable(snacks).map((snack) => (
-                    <tr>
-                        {
-                            columns.map((column) => (
-                                <td className='table-data' >
-
-                                    {snack[column]}
-                                </td>
-                            ))
-                        }
-                        {/* <td className='table-data '>{snack.id}</td>
-                        <td className='table-data '>{snack.product_name}</td>
-                        <td className='table-data '>{snack.product_weight}</td>
-                        <td className='table-data '>{snack.price}</td>
-                        <td className='table-data '>{snack.calories}</td>
-                        <td className='table-data '>{snack.ingredients.map((ingredient) => ingredient)}</td> */}
-
-
-
-                    </tr>
-                ))
-            }
-        </table>
+            </table>
+        </div>
     )
 }
 export default Datatable
